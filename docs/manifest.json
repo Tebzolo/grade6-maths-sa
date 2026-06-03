@@ -1,0 +1,27 @@
+{
+  "short_name": "Maths G6",
+  "name": "Grade 6 Maths Explorer SA",
+  "description": "Interactive Grade 6 CAPS Mathematics app for South African learners",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": ".",
+  "scope": "/grade6-maths-sa/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#1a7fe8",
+  "background_color": "#f7f3ee",
+  "categories": ["education"],
+  "lang": "en-ZA"
+}

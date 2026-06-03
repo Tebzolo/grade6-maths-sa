@@ -211,3 +211,14 @@ body {
   font-size: 1.1rem;
   color: var(--green);
 }
+
+/* PWA offline banner */
+.offline-banner {
+  background: #fdf0ec;
+  color: #7a2400;
+  text-align: center;
+  padding: .4rem;
+  font-size: .8rem;
+  font-weight: 700;
+  border-bottom: 1px solid #f5c96a;
+}

@@ -12,6 +12,8 @@ import Badges from './components/Badges';
 import Leaderboard from './components/Leaderboard';
 import BadgeToast from './components/BadgeToast';
 import { badges, translations } from './data/questions';
+import InstallPrompt from './components/InstallPrompt';
+import Credits from './components/Credits';
 import './App.css';
 
 const SECTIONS = ['numbers', 'fractions', 'geometry', 'measure', 'data', 'patterns', 'decimals'];
@@ -61,6 +63,15 @@ export default function App() {
   const [toastBadge, setToastBadge] = useState(null);
   const [langCode, setLangCode] = useState('en');
   const [soundOn, setSoundOn] = useState(true);
+  const [isOffline, setIsOffline] = useState(!navigator.onLine);
+
+  useEffect(() => {
+    const on = () => setIsOffline(false);
+    const off = () => setIsOffline(true);
+    window.addEventListener('online', on);
+    window.addEventListener('offline', off);
+    return () => { window.removeEventListener('online', on); window.removeEventListener('offline', off); };
+  }, []);
 
   const lang = translations[langCode];
 
@@ -122,6 +133,7 @@ export default function App() {
       />
       <TabNav tabs={tabs} activeTab={activeTab} onTab={setActiveTab} />
       <main className="content">
+        {isOffline && <div className="offline-banner">📵 You are offline — app still works!</div>}
         <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '.5rem' }}>
           <button
             onClick={() => setSoundOn(s => !s)}
@@ -134,6 +146,7 @@ export default function App() {
             {soundOn ? '🔊 Sound ON' : '🔇 Sound OFF'}
           </button>
         </div>
+        <Credits />
         <Leaderboard totalCorrect={totalCorrect} totalAnswered={totalAnswered} lang={lang} />
         <Badges earnedBadges={earnedBadges} lang={lang} />
         {activeTab === 'numbers' && <NumbersSection {...sectionProps('numbers')} />}
@@ -145,6 +158,7 @@ export default function App() {
         {activeTab === 'decimals' && <DecimalsSection {...sectionProps('decimals')} />}
       </main>
       {toastBadge && <BadgeToast badge={toastBadge} onDone={() => setToastBadge(null)} />}
+      <InstallPrompt />
     </div>
   );
 }
