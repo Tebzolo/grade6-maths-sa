@@ -8,15 +8,52 @@ import MeasureSection from './components/MeasureSection';
 import DataSection from './components/DataSection';
 import PatternsSection from './components/PatternsSection';
 import DecimalsSection from './components/DecimalsSection';
+import PlaceValueSection from './components/PlaceValueSection';
+import WholeNumbersSection from './components/WholeNumbersSection';
+import AdditionSection from './components/AdditionSection';
+import SubtractionSection from './components/SubtractionSection';
+import MultiplicationSection from './components/MultiplicationSection';
+import DivisionSection from './components/DivisionSection';
+import NumberSentencesSection from './components/NumberSentencesSection';
+import NumericPatternsSection from './components/NumericPatternsSection';
+import GeometricPatternsSection from './components/GeometricPatternsSection';
+import CommonFactorsSection from './components/CommonFactorsSection';
 import Badges from './components/Badges';
 import Leaderboard from './components/Leaderboard';
 import BadgeToast from './components/BadgeToast';
-import { badges, translations } from './data/questions';
-import InstallPrompt from './components/InstallPrompt';
 import Credits from './components/Credits';
+import InstallPrompt from './components/InstallPrompt';
+import { badges, translations } from './data/questions';
 import './App.css';
 
-const SECTIONS = ['numbers', 'fractions', 'geometry', 'measure', 'data', 'patterns', 'decimals'];
+const SECTIONS = [
+  'placevalue','wholenumbers','addition','subtraction','multiplication','division',
+  'numbers','fractions','geometry','measure','data','patterns','decimals',
+  'numbersentences','numericpatterns','geometricpatterns','commonfactors',
+];
+
+const TAB_CONFIG = [
+  // Row 1 — Operations
+  { id: 'placevalue',        label: 'Place Value',    color: '#1a7fe8', group: 'ops' },
+  { id: 'wholenumbers',      label: 'Whole Numbers',  color: '#0a8a8a', group: 'ops' },
+  { id: 'addition',          label: 'Addition',       color: '#18a45a', group: 'ops' },
+  { id: 'subtraction',       label: 'Subtraction',    color: '#e8541a', group: 'ops' },
+  { id: 'multiplication',    label: 'Multiplication', color: '#b318a4', group: 'ops' },
+  { id: 'division',          label: 'Division',       color: '#c8860a', group: 'ops' },
+  // Row 2 — Number concepts
+  { id: 'numbers',           label: 'Numbers',        color: '#e8541a', group: 'num' },
+  { id: 'fractions',         label: 'Fractions',      color: '#1a7fe8', group: 'num' },
+  { id: 'decimals',          label: 'Decimals',       color: '#8a3de8', group: 'num' },
+  { id: 'numbersentences',   label: 'Sentences',      color: '#c8860a', group: 'num' },
+  { id: 'commonfactors',     label: 'HCF',            color: '#18a45a', group: 'num' },
+  // Row 3 — Patterns & Space
+  { id: 'numericpatterns',   label: 'Num Patterns',   color: '#18a45a', group: 'pat' },
+  { id: 'geometricpatterns', label: 'Geo Patterns',   color: '#b318a4', group: 'pat' },
+  { id: 'patterns',          label: 'Algebra',        color: '#0a8a8a', group: 'pat' },
+  { id: 'geometry',          label: 'Geometry',       color: '#18a45a', group: 'pat' },
+  { id: 'measure',           label: 'Measurement',    color: '#b318a4', group: 'pat' },
+  { id: 'data',              label: 'Data',           color: '#c8860a', group: 'pat' },
+];
 
 function playSound(type) {
   try {
@@ -37,7 +74,7 @@ function playSound(type) {
       g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
       o.start(); o.stop(ctx.currentTime + 0.25);
     } else if (type === 'badge') {
-      [520, 620, 780, 920].forEach((f, i) => {
+      [520,620,780,920].forEach((f,i) => {
         const o2 = ctx.createOscillator();
         const g2 = ctx.createGain();
         o2.connect(g2); g2.connect(ctx.destination);
@@ -51,39 +88,38 @@ function playSound(type) {
   } catch {}
 }
 
-const initScores = () => SECTIONS.reduce((a, s) => ({ ...a, [s]: 0 }), {});
-const initAnswered = () => SECTIONS.reduce((a, s) => ({ ...a, [s]: 0 }), {});
+const initScores   = () => SECTIONS.reduce((a,s) => ({ ...a, [s]: 0 }), {});
+const initAnswered = () => SECTIONS.reduce((a,s) => ({ ...a, [s]: 0 }), {});
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('numbers');
-  const [scores, setScores] = useState(initScores);
-  const [answered, setAnswered] = useState(initAnswered);
-  const [streaks, setStreaks] = useState(initScores);
+  const [activeTab,    setActiveTab]    = useState('placevalue');
+  const [scores,       setScores]       = useState(initScores);
+  const [answered,     setAnswered]     = useState(initAnswered);
+  const [streaks,      setStreaks]       = useState(initScores);
   const [earnedBadges, setEarnedBadges] = useState([]);
-  const [toastBadge, setToastBadge] = useState(null);
-  const [langCode, setLangCode] = useState('en');
-  const [soundOn, setSoundOn] = useState(true);
-  const [isOffline, setIsOffline] = useState(!navigator.onLine);
+  const [toastBadge,   setToastBadge]   = useState(null);
+  const [langCode,     setLangCode]     = useState('en');
+  const [soundOn,      setSoundOn]      = useState(true);
+  const [isOffline,    setIsOffline]    = useState(!navigator.onLine);
+
+  const lang = translations[langCode];
 
   useEffect(() => {
-    const on = () => setIsOffline(false);
+    const on  = () => setIsOffline(false);
     const off = () => setIsOffline(true);
-    window.addEventListener('online', on);
+    window.addEventListener('online',  on);
     window.addEventListener('offline', off);
     return () => { window.removeEventListener('online', on); window.removeEventListener('offline', off); };
   }, []);
 
-  const lang = translations[langCode];
-
-  const totalAnswered = Object.values(answered).reduce((a, b) => a + b, 0);
-  const totalCorrect = Object.values(scores).reduce((a, b) => a + b, 0);
+  const totalAnswered = Object.values(answered).reduce((a,b) => a+b, 0);
+  const totalCorrect  = Object.values(scores).reduce((a,b)   => a+b, 0);
 
   const checkBadges = useCallback((newScores, newAnswered, newStreaks) => {
-    const totalS = Object.values(newScores).reduce((a, b) => a + b, 0);
-    const totalA = Object.values(newAnswered).reduce((a, b) => a + b, 0);
+    const totalS = Object.values(newScores).reduce((a,b) => a+b, 0);
+    const totalA = Object.values(newAnswered).reduce((a,b) => a+b, 0);
     const maxStreak = Math.max(...Object.values(newStreaks));
     const maxSectionScore = Math.max(...Object.values(newScores));
-
     badges.forEach(b => {
       if (!earnedBadges.includes(b.id) && b.condition(totalS, totalA, maxStreak, maxSectionScore)) {
         setEarnedBadges(prev => [...prev, b.id]);
@@ -95,7 +131,6 @@ export default function App() {
 
   const addScore = useCallback((section, correct) => {
     if (soundOn) playSound(correct ? 'correct' : 'wrong');
-
     setAnswered(prev => {
       const next = { ...prev, [section]: prev[section] + 1 };
       setScores(prevS => {
@@ -111,16 +146,14 @@ export default function App() {
     });
   }, [soundOn, checkBadges]);
 
-  const tabs = SECTIONS.map(id => ({
-    id,
-    label: lang.tabs[id],
-    color: {
-      numbers: '#e8541a', fractions: '#1a7fe8', geometry: '#18a45a',
-      measure: '#b318a4', data: '#c8860a', patterns: '#0a8a8a', decimals: '#8a3de8',
-    }[id],
-  }));
+  const sp = (id) => ({ score: scores[id], onAnswer: (c) => addScore(id, c), lang });
 
-  const sectionProps = (id) => ({ score: scores[id], onAnswer: (c) => addScore(id, c), lang });
+  // Group tabs for display
+  const groups = [
+    { label: '📐 Operations', ids: ['placevalue','wholenumbers','addition','subtraction','multiplication','division'] },
+    { label: '🔢 Number Concepts', ids: ['numbers','fractions','decimals','numbersentences','commonfactors'] },
+    { label: '🔷 Patterns & Space', ids: ['numericpatterns','geometricpatterns','patterns','geometry','measure','data'] },
+  ];
 
   return (
     <div className="app">
@@ -131,7 +164,21 @@ export default function App() {
         currentLang={langCode}
         onLangChange={setLangCode}
       />
-      <TabNav tabs={tabs} activeTab={activeTab} onTab={setActiveTab} />
+
+      {/* Grouped tab navigation */}
+      {groups.map(group => (
+        <div key={group.label}>
+          <div style={{ fontSize: '.68rem', fontWeight: 800, color: '#999', padding: '.3rem 1rem .1rem', letterSpacing: '.05em', background: '#fff' }}>
+            {group.label}
+          </div>
+          <TabNav
+            tabs={TAB_CONFIG.filter(t => group.ids.includes(t.id))}
+            activeTab={activeTab}
+            onTab={setActiveTab}
+          />
+        </div>
+      ))}
+
       <main className="content">
         {isOffline && <div className="offline-banner">📵 You are offline — app still works!</div>}
         <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '.5rem' }}>
@@ -142,21 +189,32 @@ export default function App() {
               background: soundOn ? '#e6f7ee' : '#f7f3ee', cursor: 'pointer',
               fontFamily: "'Nunito',sans-serif", fontSize: '.8rem', fontWeight: 700,
             }}
-          >
-            {soundOn ? '🔊 Sound ON' : '🔇 Sound OFF'}
-          </button>
+          >{soundOn ? '🔊 Sound ON' : '🔇 Sound OFF'}</button>
         </div>
+
         <Credits />
         <Leaderboard totalCorrect={totalCorrect} totalAnswered={totalAnswered} lang={lang} />
         <Badges earnedBadges={earnedBadges} lang={lang} />
-        {activeTab === 'numbers' && <NumbersSection {...sectionProps('numbers')} />}
-        {activeTab === 'fractions' && <FractionsSection {...sectionProps('fractions')} />}
-        {activeTab === 'geometry' && <GeometrySection {...sectionProps('geometry')} />}
-        {activeTab === 'measure' && <MeasureSection {...sectionProps('measure')} />}
-        {activeTab === 'data' && <DataSection {...sectionProps('data')} />}
-        {activeTab === 'patterns' && <PatternsSection {...sectionProps('patterns')} />}
-        {activeTab === 'decimals' && <DecimalsSection {...sectionProps('decimals')} />}
+
+        {activeTab === 'placevalue'        && <PlaceValueSection        {...sp('placevalue')} />}
+        {activeTab === 'wholenumbers'      && <WholeNumbersSection      {...sp('wholenumbers')} />}
+        {activeTab === 'addition'          && <AdditionSection          {...sp('addition')} />}
+        {activeTab === 'subtraction'       && <SubtractionSection       {...sp('subtraction')} />}
+        {activeTab === 'multiplication'    && <MultiplicationSection    {...sp('multiplication')} />}
+        {activeTab === 'division'          && <DivisionSection          {...sp('division')} />}
+        {activeTab === 'numbers'           && <NumbersSection           {...sp('numbers')} />}
+        {activeTab === 'fractions'         && <FractionsSection         {...sp('fractions')} />}
+        {activeTab === 'decimals'          && <DecimalsSection          {...sp('decimals')} />}
+        {activeTab === 'numbersentences'   && <NumberSentencesSection   {...sp('numbersentences')} />}
+        {activeTab === 'commonfactors'     && <CommonFactorsSection     {...sp('commonfactors')} />}
+        {activeTab === 'numericpatterns'   && <NumericPatternsSection   {...sp('numericpatterns')} />}
+        {activeTab === 'geometricpatterns' && <GeometricPatternsSection {...sp('geometricpatterns')} />}
+        {activeTab === 'patterns'          && <PatternsSection          {...sp('patterns')} />}
+        {activeTab === 'geometry'          && <GeometrySection          {...sp('geometry')} />}
+        {activeTab === 'measure'           && <MeasureSection           {...sp('measure')} />}
+        {activeTab === 'data'              && <DataSection              {...sp('data')} />}
       </main>
+
       {toastBadge && <BadgeToast badge={toastBadge} onDone={() => setToastBadge(null)} />}
       <InstallPrompt />
     </div>
