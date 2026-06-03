@@ -86,7 +86,7 @@ export default function Credits() {
                 borderLeft: '4px solid #1a7fe8',
               }}>
                 <div style={{ fontSize: '.72rem', fontWeight: 800, color: '#1a7fe8', letterSpacing: '.06em', marginBottom: '.4rem' }}>
-                  DEVELOPED BY
+                  ENGINEERED BY
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                   <div style={{
@@ -100,7 +100,7 @@ export default function Credits() {
                   </div>
                   <div>
                     <div style={{ fontWeight: 800, fontSize: '1rem' }}>Tebogo Maruping</div>
-                    <div style={{ fontSize: '.8rem', color: '#555' }}>Developer</div>
+                    <div style={{ fontSize: '.8rem', color: '#555' }}>Chief Architect</div>
                   </div>
                 </div>
               </div>
