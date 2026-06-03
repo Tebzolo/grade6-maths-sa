@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/grade6-maths-sa/static/css/main.e6664576.css",
-    "main.js": "/grade6-maths-sa/static/js/main.3835c54d.js",
-    "index.html": "/grade6-maths-sa/index.html",
-    "main.e6664576.css.map": "/grade6-maths-sa/static/css/main.e6664576.css.map",
-    "main.3835c54d.js.map": "/grade6-maths-sa/static/js/main.3835c54d.js.map"
+    "main.css": "/static/css/main.e6664576.css",
+    "main.js": "/static/js/main.ef511388.js",
+    "index.html": "/index.html",
+    "main.e6664576.css.map": "/static/css/main.e6664576.css.map",
+    "main.ef511388.js.map": "/static/js/main.ef511388.js.map"
   },
   "entrypoints": [
     "static/css/main.e6664576.css",
-    "static/js/main.3835c54d.js"
+    "static/js/main.ef511388.js"
   ]
 }
