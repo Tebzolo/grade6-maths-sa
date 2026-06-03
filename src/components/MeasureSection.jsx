@@ -1,7 +1,7 @@
 import QuizEngine from './QuizEngine';
 import { questions } from '../data/questions';
 
-export default function MeasureSection({ score, onAnswer }) {
+export default function MeasureSection({ score, onAnswer, lang }) {
   return (
     <div className="card">
       <div className="card-header">
@@ -37,7 +37,7 @@ export default function MeasureSection({ score, onAnswer }) {
           </div>
         ))}
       </div>
-      <QuizEngine questions={questions.measure} onAnswer={onAnswer} />
+      <QuizEngine questions={questions.measure} onAnswer={onAnswer} lang={lang} />
     </div>
   );
 }

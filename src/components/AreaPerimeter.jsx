@@ -5,7 +5,7 @@ function pick() {
   return areaProblems[Math.floor(Math.random() * areaProblems.length)];
 }
 
-export default function AreaPerimeter() {
+export default function AreaPerimeter({ lang = { check: "Check", next: "New shape →" } }) {
   const [prob, setProb] = useState(pick);
   const [areaVal, setAreaVal] = useState('');
   const [periVal, setPeriVal] = useState('');

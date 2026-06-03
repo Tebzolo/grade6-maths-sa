@@ -2,7 +2,7 @@ import QuizEngine from './QuizEngine';
 import Percentages from './Percentages';
 import { questions } from '../data/questions';
 
-export default function FractionsSection({ score, onAnswer }) {
+export default function FractionsSection({ score, onAnswer, lang }) {
   return (
     <>
       <div className="card">
@@ -15,7 +15,7 @@ export default function FractionsSection({ score, onAnswer }) {
           <div className="score-badge">⭐ {score}</div>
         </div>
         <div className="tip">Remember: to add fractions, first find the common denominator!</div>
-        <QuizEngine questions={questions.fractions} onAnswer={onAnswer} />
+        <QuizEngine questions={questions.fractions} onAnswer={onAnswer} lang={lang} />
       </div>
       <Percentages />
     </>

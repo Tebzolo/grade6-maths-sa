@@ -7,7 +7,7 @@ function pickTarget() {
   return targets[Math.floor(Math.random() * targets.length)];
 }
 
-export default function FactorGrid() {
+export default function FactorGrid({ lang = { check: "Check ✓", next: "Try another →" } }) {
   const [target, setTarget] = useState(pickTarget);
   const [selected, setSelected] = useState(new Set());
   const [result, setResult] = useState(null);

@@ -26,7 +26,7 @@ function makeChart() {
   return { labels, values, q };
 }
 
-export default function BarChart() {
+export default function BarChart({ lang = { check: "Check", next: "New chart →" } }) {
   const [chart, setChart] = useState(makeChart);
   const [val, setVal] = useState('');
   const [result, setResult] = useState(null);

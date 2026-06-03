@@ -2,7 +2,7 @@ import QuizEngine from './QuizEngine';
 import BarChart from './BarChart';
 import { questions } from '../data/questions';
 
-export default function DataSection({ score, onAnswer }) {
+export default function DataSection({ score, onAnswer, lang }) {
   return (
     <>
       <div className="card">
@@ -38,7 +38,7 @@ export default function DataSection({ score, onAnswer }) {
             </div>
           ))}
         </div>
-        <QuizEngine questions={questions.data} onAnswer={onAnswer} />
+        <QuizEngine questions={questions.data} onAnswer={onAnswer} lang={lang} />
       </div>
       <BarChart />
     </>

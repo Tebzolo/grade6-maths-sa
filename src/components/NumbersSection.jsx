@@ -3,7 +3,7 @@ import FactorGrid from './FactorGrid';
 import LongDivision from './LongDivision';
 import { questions } from '../data/questions';
 
-export default function NumbersSection({ score, onAnswer }) {
+export default function NumbersSection({ score, onAnswer, lang }) {
   return (
     <>
       <div className="card">
@@ -16,7 +16,7 @@ export default function NumbersSection({ score, onAnswer }) {
           <div className="score-badge">⭐ {score}</div>
         </div>
         <div className="tip">South African CAPS: Work with numbers up to 999 999 999 (9 digits)</div>
-        <QuizEngine questions={questions.numbers} onAnswer={onAnswer} />
+        <QuizEngine questions={questions.numbers} onAnswer={onAnswer} lang={lang} />
       </div>
       <FactorGrid />
       <LongDivision />

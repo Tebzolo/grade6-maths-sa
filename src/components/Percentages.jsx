@@ -5,7 +5,7 @@ function pick() {
   return pctProblems[Math.floor(Math.random() * pctProblems.length)];
 }
 
-export default function Percentages() {
+export default function Percentages({ lang = { check: "Check", next: "New problem →" } }) {
   const [prob, setProb] = useState(pick);
   const [val, setVal] = useState('');
   const [result, setResult] = useState(null);

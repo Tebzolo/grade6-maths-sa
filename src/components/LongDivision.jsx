@@ -7,7 +7,7 @@ function makeProblem() {
   return { n, d, ans: Math.floor(n / d), rem: n % d };
 }
 
-export default function LongDivision() {
+export default function LongDivision({ lang = { check: "Check", next: "New problem →" } }) {
   const [prob, setProb] = useState(makeProblem);
   const [ansVal, setAnsVal] = useState('');
   const [remVal, setRemVal] = useState('');

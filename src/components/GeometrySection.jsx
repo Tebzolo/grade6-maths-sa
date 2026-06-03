@@ -26,7 +26,7 @@ const ShapeVisuals = () => {
   );
 };
 
-export default function GeometrySection({ score, onAnswer }) {
+export default function GeometrySection({ score, onAnswer, lang }) {
   return (
     <>
       <div className="card">
@@ -39,7 +39,7 @@ export default function GeometrySection({ score, onAnswer }) {
           <div className="score-badge">⭐ {score}</div>
         </div>
         <ShapeVisuals />
-        <QuizEngine questions={questions.geometry} onAnswer={onAnswer} />
+        <QuizEngine questions={questions.geometry} onAnswer={onAnswer} lang={lang} />
       </div>
       <AreaPerimeter />
     </>
