@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
 import Header from './components/Header';
-import TabNav from './components/TabNav';
 import NumbersSection from './components/NumbersSection';
 import FractionsSection from './components/FractionsSection';
 import GeometrySection from './components/GeometrySection';
@@ -23,36 +22,49 @@ import Leaderboard from './components/Leaderboard';
 import BadgeToast from './components/BadgeToast';
 import Credits from './components/Credits';
 import InstallPrompt from './components/InstallPrompt';
+import TabNav from './components/TabNav';
 import { badges, translations } from './data/questions';
 import './App.css';
 
 const SECTIONS = [
   'placevalue','wholenumbers','addition','subtraction','multiplication','division',
-  'numbers','fractions','geometry','measure','data','patterns','decimals',
-  'numbersentences','numericpatterns','geometricpatterns','commonfactors',
+  'numbers','fractions','decimals','numbersentences','commonfactors',
+  'numericpatterns','geometricpatterns','patterns','geometry','measure','data',
 ];
 
-const TAB_CONFIG = [
-  // Row 1 — Operations
-  { id: 'placevalue',        label: 'Place Value',    color: '#1a7fe8', group: 'ops' },
-  { id: 'wholenumbers',      label: 'Whole Numbers',  color: '#0a8a8a', group: 'ops' },
-  { id: 'addition',          label: 'Addition',       color: '#18a45a', group: 'ops' },
-  { id: 'subtraction',       label: 'Subtraction',    color: '#e8541a', group: 'ops' },
-  { id: 'multiplication',    label: 'Multiplication', color: '#b318a4', group: 'ops' },
-  { id: 'division',          label: 'Division',       color: '#c8860a', group: 'ops' },
-  // Row 2 — Number concepts
-  { id: 'numbers',           label: 'Numbers',        color: '#e8541a', group: 'num' },
-  { id: 'fractions',         label: 'Fractions',      color: '#1a7fe8', group: 'num' },
-  { id: 'decimals',          label: 'Decimals',       color: '#8a3de8', group: 'num' },
-  { id: 'numbersentences',   label: 'Sentences',      color: '#c8860a', group: 'num' },
-  { id: 'commonfactors',     label: 'HCF',            color: '#18a45a', group: 'num' },
-  // Row 3 — Patterns & Space
-  { id: 'numericpatterns',   label: 'Num Patterns',   color: '#18a45a', group: 'pat' },
-  { id: 'geometricpatterns', label: 'Geo Patterns',   color: '#b318a4', group: 'pat' },
-  { id: 'patterns',          label: 'Algebra',        color: '#0a8a8a', group: 'pat' },
-  { id: 'geometry',          label: 'Geometry',       color: '#18a45a', group: 'pat' },
-  { id: 'measure',           label: 'Measurement',    color: '#b318a4', group: 'pat' },
-  { id: 'data',              label: 'Data',           color: '#c8860a', group: 'pat' },
+const GROUPS = [
+  {
+    label: '📐 Operations',
+    tabs: [
+      { id: 'placevalue',     label: 'Place Value',    color: '#1a7fe8' },
+      { id: 'wholenumbers',   label: 'Whole Numbers',  color: '#0a8a8a' },
+      { id: 'addition',       label: 'Addition',       color: '#18a45a' },
+      { id: 'subtraction',    label: 'Subtraction',    color: '#e8541a' },
+      { id: 'multiplication', label: 'Multiplication', color: '#b318a4' },
+      { id: 'division',       label: 'Division',       color: '#c8860a' },
+    ],
+  },
+  {
+    label: '🔢 Number Concepts',
+    tabs: [
+      { id: 'numbers',         label: 'Numbers',         color: '#e8541a' },
+      { id: 'fractions',       label: 'Fractions',       color: '#1a7fe8' },
+      { id: 'decimals',        label: 'Decimals',        color: '#8a3de8' },
+      { id: 'numbersentences', label: 'Num Sentences',   color: '#c8860a' },
+      { id: 'commonfactors',   label: 'Common Factors',  color: '#18a45a' },
+    ],
+  },
+  {
+    label: '🔷 Patterns & Space',
+    tabs: [
+      { id: 'numericpatterns',   label: 'Numeric Patterns',   color: '#18a45a' },
+      { id: 'geometricpatterns', label: 'Geometric Patterns', color: '#b318a4' },
+      { id: 'patterns',          label: 'Algebra',            color: '#0a8a8a' },
+      { id: 'geometry',          label: 'Geometry',           color: '#18a45a' },
+      { id: 'measure',           label: 'Measurement',        color: '#b318a4' },
+      { id: 'data',              label: 'Data',               color: '#c8860a' },
+    ],
+  },
 ];
 
 function playSound(type) {
@@ -79,28 +91,28 @@ function playSound(type) {
         const g2 = ctx.createGain();
         o2.connect(g2); g2.connect(ctx.destination);
         o2.frequency.value = f;
-        g2.gain.setValueAtTime(0.12, ctx.currentTime + i * 0.1);
-        g2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.1 + 0.2);
-        o2.start(ctx.currentTime + i * 0.1);
-        o2.stop(ctx.currentTime + i * 0.1 + 0.2);
+        g2.gain.setValueAtTime(0.12, ctx.currentTime + i*0.1);
+        g2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i*0.1 + 0.2);
+        o2.start(ctx.currentTime + i*0.1);
+        o2.stop(ctx.currentTime + i*0.1 + 0.2);
       });
     }
   } catch {}
 }
 
-const initScores   = () => SECTIONS.reduce((a,s) => ({ ...a, [s]: 0 }), {});
-const initAnswered = () => SECTIONS.reduce((a,s) => ({ ...a, [s]: 0 }), {});
+const initScores   = () => SECTIONS.reduce((a,s) => ({...a,[s]:0}), {});
+const initAnswered = () => SECTIONS.reduce((a,s) => ({...a,[s]:0}), {});
 
 export default function App() {
   const [activeTab,    setActiveTab]    = useState('placevalue');
   const [scores,       setScores]       = useState(initScores);
   const [answered,     setAnswered]     = useState(initAnswered);
-  const [streaks,      setStreaks]       = useState(initScores);
   const [earnedBadges, setEarnedBadges] = useState([]);
   const [toastBadge,   setToastBadge]   = useState(null);
   const [langCode,     setLangCode]     = useState('en');
   const [soundOn,      setSoundOn]      = useState(true);
   const [isOffline,    setIsOffline]    = useState(!navigator.onLine);
+  const [streak,       setStreak]       = useState(0);
 
   const lang = translations[langCode];
 
@@ -115,45 +127,41 @@ export default function App() {
   const totalAnswered = Object.values(answered).reduce((a,b) => a+b, 0);
   const totalCorrect  = Object.values(scores).reduce((a,b)   => a+b, 0);
 
-  const checkBadges = useCallback((newScores, newAnswered, newStreaks) => {
-    const totalS = Object.values(newScores).reduce((a,b) => a+b, 0);
-    const totalA = Object.values(newAnswered).reduce((a,b) => a+b, 0);
-    const maxStreak = Math.max(...Object.values(newStreaks));
-    const maxSectionScore = Math.max(...Object.values(newScores));
+  const checkBadges = useCallback((totalS, totalA, currentStreak, maxSectionScore) => {
     badges.forEach(b => {
-      if (!earnedBadges.includes(b.id) && b.condition(totalS, totalA, maxStreak, maxSectionScore)) {
-        setEarnedBadges(prev => [...prev, b.id]);
-        setToastBadge(b);
-        if (soundOn) playSound('badge');
-      }
+      setEarnedBadges(prev => {
+        if (prev.includes(b.id)) return prev;
+        if (b.condition(totalS, totalA, currentStreak, maxSectionScore)) {
+          setToastBadge(b);
+          if (soundOn) playSound('badge');
+          return [...prev, b.id];
+        }
+        return prev;
+      });
     });
-  }, [earnedBadges, soundOn]);
+  }, [soundOn]);
 
   const addScore = useCallback((section, correct) => {
     if (soundOn) playSound(correct ? 'correct' : 'wrong');
-    setAnswered(prev => {
-      const next = { ...prev, [section]: prev[section] + 1 };
-      setScores(prevS => {
-        const nextS = correct ? { ...prevS, [section]: prevS[section] + 1 } : prevS;
-        setStreaks(prevSt => {
-          const nextSt = correct ? { ...prevSt, [section]: prevSt[section] + 1 } : { ...prevSt, [section]: 0 };
-          checkBadges(nextS, next, nextSt);
-          return nextSt;
+    setStreak(prev => {
+      const newStreak = correct ? prev + 1 : 0;
+      setAnswered(prevA => {
+        const nextA = {...prevA, [section]: prevA[section]+1};
+        setScores(prevS => {
+          const nextS = correct ? {...prevS, [section]: prevS[section]+1} : prevS;
+          const totalS = Object.values(nextS).reduce((a,b)=>a+b,0);
+          const totalA = Object.values(nextA).reduce((a,b)=>a+b,0);
+          const maxSec = Math.max(...Object.values(nextS));
+          checkBadges(totalS, totalA, newStreak, maxSec);
+          return nextS;
         });
-        return nextS;
+        return nextA;
       });
-      return next;
+      return newStreak;
     });
   }, [soundOn, checkBadges]);
 
   const sp = (id) => ({ score: scores[id], onAnswer: (c) => addScore(id, c), lang });
-
-  // Group tabs for display
-  const groups = [
-    { label: '📐 Operations', ids: ['placevalue','wholenumbers','addition','subtraction','multiplication','division'] },
-    { label: '🔢 Number Concepts', ids: ['numbers','fractions','decimals','numbersentences','commonfactors'] },
-    { label: '🔷 Patterns & Space', ids: ['numericpatterns','geometricpatterns','patterns','geometry','measure','data'] },
-  ];
 
   return (
     <div className="app">
@@ -165,14 +173,18 @@ export default function App() {
         onLangChange={setLangCode}
       />
 
-      {/* Grouped tab navigation */}
-      {groups.map(group => (
-        <div key={group.label}>
-          <div style={{ fontSize: '.68rem', fontWeight: 800, color: '#999', padding: '.3rem 1rem .1rem', letterSpacing: '.05em', background: '#fff' }}>
+      {/* Grouped tabs — all visible, wrapping */}
+      {GROUPS.map(group => (
+        <div key={group.label} style={{ borderBottom: '1px solid #e0d8cf' }}>
+          <div style={{
+            fontSize: '.65rem', fontWeight: 800, color: '#fff',
+            padding: '.2rem .75rem', background: '#444',
+            letterSpacing: '.05em',
+          }}>
             {group.label}
           </div>
           <TabNav
-            tabs={TAB_CONFIG.filter(t => group.ids.includes(t.id))}
+            tabs={group.tabs}
             activeTab={activeTab}
             onTab={setActiveTab}
           />
@@ -180,14 +192,19 @@ export default function App() {
       ))}
 
       <main className="content">
-        {isOffline && <div className="offline-banner">📵 You are offline — app still works!</div>}
-        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '.5rem' }}>
+        {isOffline && (
+          <div className="offline-banner">📵 You are offline — app still works!</div>
+        )}
+
+        <div style={{ display:'flex', justifyContent:'flex-end', marginBottom:'.5rem' }}>
           <button
             onClick={() => setSoundOn(s => !s)}
             style={{
-              padding: '.3rem .75rem', borderRadius: '999px', border: '1.5px solid #e0d8cf',
-              background: soundOn ? '#e6f7ee' : '#f7f3ee', cursor: 'pointer',
-              fontFamily: "'Nunito',sans-serif", fontSize: '.8rem', fontWeight: 700,
+              padding: '.3rem .75rem', borderRadius: '999px',
+              border: '1.5px solid #e0d8cf',
+              background: soundOn ? '#e6f7ee' : '#f7f3ee',
+              cursor: 'pointer', fontFamily: "'Nunito',sans-serif",
+              fontSize: '.8rem', fontWeight: 700,
             }}
           >{soundOn ? '🔊 Sound ON' : '🔇 Sound OFF'}</button>
         </div>
